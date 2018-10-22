@@ -1,0 +1,42 @@
+.custom-restricted-width {
+    /* To limit the menu width to the content of the menu: */
+    display: inline-block;
+    /* Or set the width explicitly: */
+    width: 10em;
+    background-color: white;
+}
+
+.flexContainer{
+    margin: 0;
+    padding: 0;
+ box-sizing: border-box;
+    display: flex;
+}
+
+.flexItem{
+
+}
+
+.menuCsa{
+     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    flex: 1;
+
+}
+
+
+.componenteCsa{
+    flex: 3;
+}
+
+.hiden{
+    overflow: hidden;
+}
+
+.header{
+    
+    margin: 0;
+    padding-top: 1em;
+
+}

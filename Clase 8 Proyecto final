@@ -1,0 +1,380 @@
+
+
+-------------- Clase 8.1: Introducción al proyecto final -------------------------
+
+Se probó como se registra un usuario (Dentro de Firebase) 
+para la autenticación desde nuestra primera APP-React y 
+se vio en la consola de fire base:
+
+https://console.firebase.google.com/project/app-react-cero/authentication/users
+
+
+Se inicia la integración de los cursos que hicimos las primeras clases 
+y la App con la autenticación de firebase.
+
+Se copia todos los componentes de la carpeta 01-componentes
+y se pegan en la carpeta courses que se creó en la carpeta
+components de la APP final.
+
+Se agrega los datos (.json) con:
+
+        - Categorias.
+        - Cursos Actuales de EDTeam.
+        - Profesores.
+
+Se pretende crear un buscador  para que el usuario de la app
+pueda buscar su curso usando palabras claves, nombre de Profesores
+categorias o cursos.
+
+
+-------------- Clase 8.2: Camnbiar nombre de componentes -------------------------
+
+
+En el archivo protected/index.jsx será
+donde se cargue el componente courses:
+
+- Se importa el componente Courses del index.jsx
+  de la carpeta courses y se renderiza el componente
+
+  import Courses from '../../courses/'
+
+   <Courses/>
+
+- Originalmente se llamaba App al componente 
+  del  courses/index.jsx  pero se renombra:
+  
+          App. -->   Courses.
+
+        - En la clase.
+        - En el Export default
+        - En las props.types
+        - En las Default.Props
+        - En el formulario
+
+
+- En la carpeta data se crea un index.js donde
+  se importaran los 3 .Json categories, teachers
+  y courses y se exportan de manera destructurada:
+
+            import { categories } from './categories.json'
+            import { courses } from './courses.json'
+            import { teachers } from './teachers.json'
+
+            export {
+            categories,
+            courses,
+            teachers
+            }
+
+- courses/index.jsx importa de manera destructurada
+   categories, teachers y courses desde el data/index.jsx:
+
+    
+
+import { categories, courses, teachers } from '../../data/'
+
+Aquí se mezcla el ejercicio de los cursos, rutas y autenticación.
+
+
+
+-------------- Clase 8.3: Implementar fecha en formularios. -------------------------
+
+
+Se implementará una libreria de terceros:
+
+        React date Picker
+
+Se insatala con yarn desde la terminal:
+
+     yarn add react-datepicker
+
+NOTA: SE DEBE TENER INSTALADO PREVIAMENTE
+      LAS DEPENDECIAS:
+     
+      React,PropTypes y Moment.js 
+
+      en la terminal " yarn add moment" 
+
+Se crea en la carpeta courses un calendario en
+ un archivo aparte de manera que si se necesita
+ en otro proyecto se puede reutilizar:
+
+        Calendar.jsx = Calendario: 
+
+En este archivo se creará un componente que 
+renderiza un componentetipo <DatePiker/> de 
+ciertas caracteristicas que se llamará:
+
+                <Calendar/>
+
+  <Calendar/> se usará como otro input en el
+  componente CoursesAddForm donde el usuario
+  pueda ingresar la fecha por medio de un 
+  calendario ceado por la libreria DatePicker.
+
+ Calendar.jsx se importa:
+
+
+        import React, { Component } from 'react';
+
+        import DatePicker from 'react-datepicker'; 
+        // Se importa el componente DatePicker de la dependencia instalada
+
+        import moment from 'moment';
+        // Se importa moment que lo usa internamente esta libreria
+
+        import 'react-datepicker/dist/react-datepicker.css';
+        // Para que el calendario tome los estilos de  la libreria 
+        // DatePicker
+
+
+En el estado del componente <Calendar/> se
+guardará la fecha que inicialmente será
+nula y mostrará la palabra "Fecha".
+
+
+      this.state = {
+            // Estado
+            startDate: null 
+            // Fecha inicial Ninguna
+        } 
+
+Se crea un método handleChange() que manejará
+el estado. Este detectará cambios en el calendario
+y asignará el nuevo valor al estado. (Hay que vindearlo)
+
+
+
+          handleChange(date){
+        // Iguala el estado con la fecha (Que elige el usuario) cuando haya un cambio
+        this.setState({ 
+            startDate:  date // Parametro que recibe el manejador
+        })
+    }
+
+Se debe exportar el componente Calendar:
+
+
+            export default Calendar 
+
+El render() retornará un componente <DatePicker/>
+conciertas caracteristicas que se le pasan por medio
+de sus propiedades:
+
+<DatePicker
+
+  selected={this.state.startDate} 
+  // Que la fecha "Selecionada(La que se ve)" sea igual a la que tiene guardada el estado
+               
+  onChange={this.handleChange}
+  //
+                
+  placeholderText= "Fecha"
+            
+  isClareable ={true}
+ 
+  dateFormat = "DD/MM/YYYY"
+
+  name = {this.props.name}
+
+/>
+
+    06:46   ---->     COMPLETAR
+
+
+
+------- Clase 8.4: Select para profesores ---------
+
+
+ Se implementó un menu selector multiple,
+ que carga la lista de profesores desde un 
+ archivo Json.
+
+
+                COMPLETAR
+
+
+
+
+
+----- Clase 8.5: Select para categorías y estilos CSS APP Pure CSS-------
+
+Se creó un selector multiple para las categorias de los cursos
+y se le aplicó purecss/form.css purecss/buttons.css
+
+
+
+
+                COMPLETAR
+
+
+
+----- Clase 8.6: Datos de los cursos -------
+
+- Se cambió el favicon de REACT por el de EDTeam
+
+- Se agrega el link de CDN de FontAwesome de donde 
+  se tomarán los iconos para la presentación de los 
+  cursos. Se agrega en el index.html de la carpeta
+  public.
+
+- Se trabajará en el componente mas pequeño de <Course/> 
+ para agregar la información faltante de cada curso
+ Key, Id, Name, Poster, url, amount, teacher, date, categories
+
+- Se modifica <CoursesList/> para meter Key, Id, Name, Poster, url, amount, 
+teacher, date, categories por medio de props dentro de <Course/>
+cuando sea renderizado.
+
+- Se crea courses.list.CSS con los estilos que lleva
+  la lista.
+
+- Course.jsx se modifica lo que devuelve el compoenente:
+
+Nueva configuración de cada List Item:
+   
+   <li className={this.props.className}>
+        <a href="">
+            <figure>
+                <img src="" alt=""/>
+                <figcaption></figcaption>
+            </figure>
+         </a>
+        <section>
+            Info de cada curso!
+        </section>
+    </li> 
+
+- Del componente principal de los cursos: courses/index.jsx
+  se borran los metodos de prueva fetchData(), resetData(), 
+  y componentDidMount() y los botones de borrar y cargar cursos.
+
+
+- Se modifica el estado para que cargue los cursos
+  directamente del objeto Json:
+
+        this.state = {
+        // Objeto State: Lo componen 1 Arrays
+            courses: courses
+        //  courses: const courses = array de objetos con los cursos guardado en la carpeta data  
+               
+        }
+
+- Al enlace <a href: {props.url}> en Course.jsx
+
+-  <a className="CoursesList-link" href={props.url} target="_blank">
+            <figure>
+                <img src={props.poster} alt={props.name}/>
+                <figcaption>
+                    <h2>{props.name}</h2>
+                </figcaption>
+            </figure>
+         </a>
+
+- Section:
+ <section>
+            
+            <p>
+                <i className="fa fa-graduation-cap" ></i>
+                {props.teacher}
+            </p>
+
+            <p>
+                <i className="fa fa-calendar-o" ></i>
+                {props.date}
+            </p>
+
+            <p>
+               <b> 
+                    <i className="fa fa-dollar"></i>
+                    {props.amount}
+                </b>
+
+                <b>
+                    <i className="fa fa-key"></i>
+                    {props.id}
+                </b>
+            </p>
+
+            <p>
+                <i className="fa fa-tags" ></i>
+                {
+              //  Para que muestre todas las categorias y si es el ultimo
+              //  elemento del array mapeado que NO LLEVE "," al final.
+              // cat: categories; index: indice del array, arr: array que se está mapeando    
+                    props.categories.map(
+
+                        (cat, index,arr)=>
+                            (index === arr.length - 1)
+                            ? cat
+                            : `${cat}, `
+
+                    )
+                }
+
+            </p>
+
+- En CoursesList.jsx se le agrega una clase
+  para volver la Lista de cursos Responsive
+  con una "pequeña" media Query agragada en
+  courses-list.css:
+
+    <ul className="CoursesList" >
+
+- Se invierte el orden de los cursos para
+  que se vean de los cursos mas nuevos a 
+  los más viejos.Se usa método .reverse()
+  para invertir el array.
+
+           props.courses.map(course => (       
+                        
+                        <Course
+                            key={course.id}
+                            id={course.id}
+                            name={course.name}
+                            poster={course.poster}
+                            url={course.url}
+                            amount={course.amount}
+                            teacher={course.teacher}
+                            date={course.date}
+                            categories={course.categories}
+                        />
+            
+        ) ).reverse() // Para que despues de mapeado el arreglo lo invierta.
+
+
+
+
+
+----- Clase 8.7: Formulario de agregar cursos -------
+
+
+Se debe modificar el componente principal 
+course/index.jsx para que reciba todas las
+nuevas propiedades que tiene: poster, web,
+categories.
+
+Se modifica el método handleOnAddCourse(e) 
+para: si no hay la propiedad que coloque por
+ defecto las defaultProps:
+
+
+
+            id: (form.id.value) ? form.id.value : Courses.defaultProps.id,
+            name: (form.name.value) ? form.name.value : Courses.defaultProps.name,
+            poster: (form.poster.value) ? form.poster.value : Courses.defaultProps.poster,
+            url: (form.url.value) ? form.url.value : Courses.defaultProps.url,
+            amount: (form.amount.value) ? form.amount.value : Courses.defaultProps.amount,
+            teacher: (form.teacher.value) ? form.teacher.value : Courses.defaultProps.teacher,
+            date: form.date.value ? form.date.value : Courses.defaultProps.date,
+           
+Para catgories por ser mas de una, se usa split() para que rompa la cadena 
+de texto y cuando detecte "," separe los valores con comas.
+           
+            categories: (form.categories.value) ? form.categories.value.split(',') : Courses.defaultProps.categories
+
+
+en el if y else del render() se remplaza la div contenedora
+por un  <article className="Main-container"> para darle
+los estilos de purecss.
+

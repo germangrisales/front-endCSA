@@ -1,0 +1,19 @@
+
+{
+    "courses":[
+
+        { "id": 1, "name": "React desde 0", "teacher": "Jhonny Mircha", "price": 500.000 },
+     
+        { "id": 2, "name": "Pussy desde 0", "teacher": "Mia Khalifa", "price": 1000.000 },
+     
+        { "id": 3, "name": "Shit desde 0", "teacher": "Andres Camilo", "price": 800.000 },
+         
+        { "id": 4, "name": "React desde 0", "teacher": "Jhonny Mircha", "price": 500.000 },
+       
+        { "id": 5, "name": "Pussy desde 0", "teacher": "Mia Khalifa", "price": 1000.000 },
+        
+        { "id": 6, "name": "Shit desde 0", "teacher": "Andres Camilo", "price": 800.000 }
+
+    ]   
+
+}

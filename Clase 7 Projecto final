@@ -1,0 +1,251 @@
+////////////////////////////////////////////////////
+
+-----------CLASE 7: Desarrollo final primera parte -----------------------------
+
+----------- Clase 7.2: Estilos menu de hamburguesa  --------------
+
+- Se cambia el componente  "Protegida" (/Protected/index.jsx) de la carpeta
+  protected por: DashboardCourses. (Tablero de cursos)
+
+
+- Pure CSS permite importar por separado (como componentes)
+  cada parte del framewor total: Base, Grip, menu, formularios,menus.
+
+- Solo usaremos el manu de pure css:
+      
+      import 'purecss/lib/menus.css'
+
+- En el index.css de la carperta components se
+ modifica la media Query de 62em  -> 64 em = 1028px
+
+- Alla etiqueta <img> donde está el logo se le 
+agrega una className="edteam-logo "
+
+- Se pegan unos estilos para el Main y para el edteam-logo:
+
+        .Main-container { padding: 1rem;}
+  
+        .edteam-logo{
+            display: block;
+            margin: auto;
+            width: auto;
+            max-height: 3rem;
+        }
+
+
+
+
+----------- Clase 7.3: Confugurando rutas publicas y privadas --------------
+
+
+
+- Se crea en index.jsx de la carpeta components:
+
+                    RUTA PRIVADA
+  const PrivateRoute = ( {component: Component, authed, rest })=>(
+
+    <Route 
+        {...rest}
+        render={
+         props => authed === true // Operador ternario. Se evalua Auth
+             ? <Component {...props}/>
+             : <Redirect to= { { pathname: '/login', state: {from: props.location} } } />
+        }
+    />
+
+)
+
+                 RUTA PÚBLICA
+const PublicRoute = ({ component: Component, authed, rest }) => (
+
+    <Route
+        {...rest}
+        render={
+            props => authed === false // Operador ternario. Se evalua Auth
+                ? <Component {...props} />
+                : <Redirect to='/cursos' />
+        }
+    />
+
+)
+
+
+
+----------- Clase 7.4: RUTAS PRIVADAS EN EL MENU --------------
+
+ componentDidMount(){
+
+    }
+
+    componentWillUnmount(){
+         
+    }
+
+04:08
+
+- Se convierte el menu de navegación en un componente
+  dinámico usando un operador ternario:
+
+    Se evalua en el la propiedad del estado 
+    authed y si está en true (esta autenticado en
+    firebase) muestra en el menu el <Link> a cursos
+    y logout:
+
+        True: Muestrasen la barra de navegación Cursos y Logout.  
+    
+        False:
+   
+            Loogout: <Link to="/logout"
+            click-> setState({ authed: false})
+            Ejecuta logout()-> Método: firebaseAuth.signOut
+            >
+
+
+
+-------------- Clase 7.5: RUTAS PRIVADAS EN EL <Switch/> --------------
+
+
+Se crea un componente auxiliar: se usa 
+cuando se quiere cambiar el comportamiento
+de un componente según el estado del componente
+que lo llama para renderizarlo.
+
+        <PublicRoute> : 
+        
+    Componente auxiliar para pasar el parametro
+     authed desde el estado del componente que 
+     quiere renderizar <PublicRoute> hasta el
+    operador ternario que esta dentro de este.(<PublicRoute>)
+
+
+Se usa en el render para registro y login,
+se les pasa una variable authed = authed del estado.
+
+El componente <PublicRoute> evalua authed con un operador
+ternario para escoger que renderiza:
+
+       - si authed es falso: Renderiza el componente Login y Registro.
+
+          <PublicRoute authed={this.state.authed} path='/registro' component={Register} />
+          <PublicRoute authed={this.state.authed}  path='/login' component={Login} />
+
+Para la Ruta Privada se usa el componente <PrivateRoute/> 
+y en este evalua un opoerador ternario:
+
+        - Si authed es True renderiza: Cursos "component={DashboardCourses}"
+
+  <PrivateRoute authed={this.state.authed} path='/cursos' component={DashboardCourses} /> 
+
+
+
+-------------- Clase 7.6: Previniendo Errores en el Login --------------
+
+
+ Se trabaja en el formulario Login.jsx
+
+Se importa forms.css y buttons.css de /node_modules/purecss/build
+
+    import '../helpers/forms.css' // No dejar espacios entre las rutas
+    import '../helpers/buttons.css'
+
+Se crea un archivo llamado: Para dar estilos a los formularios.
+
+        login-register.css : Estrilos para el login y el register
+
+Se importa el archivo en el Login.jsx
+
+    import './login-register.css'
+
+
+Se le agrega el className= "pure-form AuthForm"
+para que adquiera los estilos que importamos
+
+Se le agrega className= "u-error" al <div> 
+contenedor del mensaje de error.
+
+
+Se le agrega  className="pure-button pure-button-primary"
+al <input type button> Login </input>
+
+Se crea un link "¿Olvidaste tu contraseña?"
+<a href="#" onClick={this.resetPassword} className="alert-link">¿ Olvidaste tu contraseña ?</a>
+
+        onClick={this.resetPassword} --> Se debe crear el Método resetPassword() y "bindearlo"
+
+Método:
+
+      resetPassword(){
+
+        resetPassword(this.email.value) 
+            .then(() => this.setState( this.setMessage(`Se ha enviado un correo electrónico a <b>${this.email.value}<b> para restablecer tu contraseña`) )  ) // Si se resuelve la promesa me devuelve
+                .catch(err => this.setState( this.setMessage(`El correo: '${this.email.value}' NO se encuentra registrado`) ) )    
+    }
+    
+ resetPassword() se importa de Auth.jsx y recibe
+ como parametro el correo donde se enviará el
+ correo de recuperación de contraseña.
+
+ Es una promesa, si resulta exitosa
+devuelve le mensaje:
+
+        "Se ha enviado un correo electrónico a 
+        'Correo ingresado' para restablecer tu 
+        contraseña."
+
+si resulta negativa
+devuelve le mensaje:
+
+         `El correo: (Correo ingresado) NO se
+          encuentra registrado`
+
+
+- componentDidMount ---> Es donde captura la
+  autenticación de firebase.
+
+        (Pendiente por realizar )
+
+
+-------------- Clase 7.7: Formulario de registro --------------
+
+- Se copia el formato del componente Login en Register.jsx
+
+- Se importa auth de los helpers.
+        import { auth } from '../helpers/Auth'
+
+- Se completa la programación del componente auth que 
+  está dentro de de Auth.jsx en helpers.
+
+- Se completa la función saveUser en Auth.jsx:
+
+    .child(`users/${user.uid}/info`) --> Recibe como hijo lo que tiene que ver con la estructura
+                                         que nos da firebase: atavez de una ruta /user que estará
+                                         en nuestra APP /id unico  del user / info
+
+    .set({
+            email: user.email, -->  Toma el email de lo que viene en user.
+            uid: user.uid      -->  Se crea un id unico con uid.
+        })
+
+- En Register.jsx se cambia el método login()
+  que se usa en el C.Login para .signWithEmailAndPassword
+  Se cambia en el handleOnsubmit se cambia por auth() para 
+  que se ejecute .createUserWithEmailAdnPassword
+
+- Se cambia Login en el render por: 
+        - Registro de Usuario
+        - Login del submit por Registrar
+        - Se borra el enlace  ¿Olvidó su contraseña?
+
+
+-------------- Clase 7.8: Login -------------------------
+
+- Se van a progrmar los métodos del ciclo de 
+  vida del componente principal:
+
+  componentDidMount(){
+
+    }
+
+    componentWillUnmount(){
+         
+    }
