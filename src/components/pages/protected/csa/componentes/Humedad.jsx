@@ -7,6 +7,11 @@ import { Bar, Line, Pie, Doughnut } from 'react-chartjs-2';
 // Importa el/los tipos de gráficas que se renderizaran:
 // Bar: Barra, Line: Linea, Pie: Torta/pastel, Doughnut: Dona.
 
+import Calendar from './helpers/Calendar'
+
+import '../../../../../../node_modules/purecss/build/buttons.css'
+
+import '../../../../../../node_modules/purecss/build/forms.css'
 
 class Humedad extends Component {
 
@@ -15,72 +20,305 @@ class Humedad extends Component {
         super(...props)
 
         this.state = {
-            temperature: [],
 
-            chartData0: {},
+            metricsDay: {},// objeto general con la información de los dias
 
-            chartData1: {},
+            chartDataModulesDay: {}, //Datos de grafica por dia.
 
-            chartData2: {}// Fin de chartData
+            chartDataModulesDayAverage: {},
+
+            dayAverage: [],
+
+            metricsMonth: {},
+
+            chartDataModulesMonth: {}, // Datos de la grafica de cada sensor individual
+
+            chartDataModulesMonthAverage: {}, // Datos de la gráfica promedio del mes todo los sensores
+
+            dateData:'' // Fecha de datos que se quiere 
+            // Fin de chartData
         } // Fin deState
+
+        this.reciveDataDay = this.reciveDataDay.bind(this)  
 
     }
 
-    componentWillMount() {
+handleDataDay(){
+
+    axios({
+        method: 'get',
+        url: `https://csa-systems.herokuapp.com/sensores/datos/search?dateSearch=${this.state.dateData}`,
+
+    }).then(response => {
+
+        this.setState({
+            metricsDay: response.data.metrics
+        })
+        console.log(this.state.metricsDay)
+
+        // Grafica de los 4 Modulos del dia
+        this.setState({
+
+            chartDataModulesDay: {
+
+                labels: this.state.metricsDay.hours,
+
+                datasets: [
+
+                    {// Modulo 1: this.state.metrics.moduleHumidity.m1
+                        label: 'M1 Humedad: %',
+                        data: this.state.metricsDay.moduleHumidity.m1,
+
+
+
+                        fillColor: 'rgba( 215, 91, 181,1)',
+                        backgroundColor: 'rgba(125, 291, 181, 0.5)',
+
+                        strokeColor: 'rgba(125,32,190,1)',
+                        borderColor: 'rgba(255,214,127,1)',
+                        borderWidth: 2,
+
+                        pointBorderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
+                        pointColor: 'rgba(151,187,205,1)',
+                        pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                        pointHighlightFill: 'rgba(255,214,127,1)',
+                        pointHighlightStroke: 'rgba(255,214,127,1)'
+
+
+                    }, // Fin Modulo1
+                    {// Modulo 1: this.state.metrics.moduleHumidity.m1
+                        label: 'M2 Humedad: %',
+                        data: this.state.metricsDay.moduleHumidity.m2,
+
+                        fillColor: 'rgba( 225, 191, 81,1)',
+                        backgroundColor: 'rgba(225, 191, 81, 0.5)',
+
+                        strokeColor: 'rgba(255,252,95,1)',
+                        borderColor: 'rgba(255,214,127,1)',
+                        borderWidth: 2,
+
+                        pointBorderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
+                        pointColor: 'rgba(151,187,205,1)',
+                        pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                        pointHighlightFill: 'rgba(255,214,127,1)',
+                        pointHighlightStroke: 'rgba(255,214,127,1)'
+
+
+                    }, // Fin de M2
+                    {// Modulo 3: this.state.metrics.moduleHumidity.m1
+                        label: 'M3 Humedad: %',
+                        data: this.state.metricsDay.moduleHumidity.m3,
+
+
+
+                        fillColor: 'rgba( 125, 191, 31,1)',
+                        backgroundColor: 'rgba(215, 111, 281, 0.5)',
+
+                        strokeColor: 'rgba(255,252,95,1)',
+                        borderColor: 'rgba(255,214,127,1)',
+                        borderWidth: 2,
+
+                        pointBorderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
+                        pointColor: 'rgba(151,187,205,1)',
+                        pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                        pointHighlightFill: 'rgba(255,214,127,1)',
+                        pointHighlightStroke: 'rgba(255,214,127,1)'
+
+
+                    }, // Fin de M3
+                    {// Modulo 4: this.state.metrics.moduleHumidity.m1
+                        label: 'M4 Humedad: %',
+                        data: this.state.metricsDay.moduleHumidity.m4,
+
+
+
+                        fillColor: 'rgba( 25, 11, 31,1)',
+                        backgroundColor: 'rgba(25, 255, 50, 0.5)',
+
+                        strokeColor: 'rgba(55,152,85,1)',
+                        borderColor: 'rgba(155,14,27,1)',
+                        borderWidth: 2,
+
+                        pointBorderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
+                        pointColor: 'rgba(151,187,205,1)',
+                        pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                        pointHighlightFill: 'rgba(255,214,127,1)',
+                        pointHighlightStroke: 'rgba(255,214,127,1)'
+
+
+                    } // Fin M4
+
+                ]//Fin del DataSets
+
+            }// Fin de chartData
+        })
+
+        // Grafica 4 Modulos PROMEDIO el dia
+        this.setState({
+
+            chartDataModulesDayAverage: {
+
+                labels: this.state.metricsDay.hours,
+
+                datasets: [
+
+                    {// Modulo 1: this.state.metrics.moduleHumidity.m1
+                        label: 'Promedio modulos. Humedad: %',
+                        data: this.state.metricsDay.totalRelativeHumidity,
+
+
+
+                        fillColor: 'rgba( 215, 91, 181,1)',
+                        backgroundColor: 'rgba(125, 291, 181, 0.5)',
+
+                        strokeColor: 'rgba(125,32,190,1)',
+                        borderColor: 'rgba(255,214,127,1)',
+                        borderWidth: 2,
+
+                        pointBorderWidth: 3,
+                        pointRadius: 4,
+                        pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
+                        pointColor: 'rgba(151,187,205,1)',
+                        pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                        pointHighlightFill: 'rgba(255,214,127,1)',
+                        pointHighlightStroke: 'rgba(255,214,127,1)'
+
+
+                    } // Fin Modulo1
+                ]//Fin del DataSets
+
+            }// Fin de chartData
+        })
+
+        // Humedad promedio del dia
+        this.setState({
+
+            dayAverage: [this.state.metricsDay.totalHumidity.toFixed(2)]// ToFixed para limitar los decimales
+        })
+    })
+        .catch(function (error) {
+            console.log(error);
+        });
+        // Fin de la petición del Objeto metrics Day
+
+}
+
+componentDidMount() {
 
         axios({
             method: 'get',
-            url: 'https://polar-taiga-96306.herokuapp.com/categoria/grafica',
-            headers: {
-                'token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c3VhcmlvIjp7InJvbGUiOiJBRE1JTl9ST0xFIiwiZXN0YWRvIjp0cnVlLCJnb29nbGUiOmZhbHNlLCJfaWQiOiI1Yjk5ODM1YjQyMzcwMjAwMTRmZjllMWMiLCJub21icmUiOiJnZXJtYW4iLCJlbWFpbCI6ImdlckBnbWFpbC5jb20iLCJmZWNoYSI6IldlZCBTZXAgMTIgMjAxOCAyMToyMTozMSBHTVQrMDAwMCAoVVRDKSIsIl9fdiI6MH0sImlhdCI6MTUzNjg5ODEyNSwiZXhwIjoxNTM3MDcwOTI1fQ.r4e8TroqXdgAEQXjPcT9_AARsVWiryV8HnJSN-IMJ1o'
-            }
+            url: 'https://csa-systems.herokuapp.com/sensores/datos/octubre-2018',
+
         }).then(response => {
 
+            let daysArray = [] // Crea arreglo vacio para meter id con los dias
+
+            let m1 = [] // Valores del mes de M1
+
+            let m2 = [] // Valores del mes de M2
+
+            let m3 = [] // Valores del mes de M3
+
+            let m4 = [] // Valores del mes de M4
+
 
             this.setState({
-                temperature: response.data.temperatura,
+                metricsMonth: response.data.metrics
             })
 
-            console.log(this.state.temperature);
+            this.state.metricsMonth.monthsArray.forEach(element => {
 
+                daysArray.push(element.id)
+
+            })
+
+            this.state.metricsMonth.monthsArray.forEach(element => {
+
+                m1.push(element.humidityModules[0])
+
+            })
+
+            this.state.metricsMonth.monthsArray.forEach(element => {
+
+                m2.push(element.humidityModules[1])
+
+            })
+
+            this.state.metricsMonth.monthsArray.forEach(element => {
+
+                m3.push(element.humidityModules[2])
+
+            })
+
+            this.state.metricsMonth.monthsArray.forEach(element => {
+
+                m4.push(element.humidityModules[3])
+
+            })
+
+            console.log(this.state.metricsMonth.monthsArray)
+
+            let TotalHumidity = []
+
+            this.state.metricsMonth.monthsArray.forEach(element => {
+
+                TotalHumidity.push(element.totalHumidity)
+            })
+
+            console.log(TotalHumidity)
+
+
+            // console.log({
+            //     daysArray,
+            //     m1,
+            //     m2,
+            //     m3,
+            //     m4
+            // })
+
+            // Grafica de los 4 Modulos del dia
             this.setState({
 
-                chartData0: {
+                chartDataModulesMonth: {
 
-                    labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    labels: daysArray,
 
                     datasets: [
 
-                        {// Linea 1
-                            label: '2018 Humedad %',
+                        {// Modulo 1: this.state.metrics.moduleHumidity.m1
+                            label: 'M1 Humedad: %',
+                            data: m1,
 
-                            data: this.state.temperature,
 
-                            fillColor: 'rgba(255, 99, 132, 0.6)',
-                            backgroundColor: 'rgba(25, 189, 255, 0.2)',
 
-                            strokeColor: 'rgba(174, 240, 254, 0.9)',
-                            borderColor: 'rgba(174, 240, 254, 1)',
+                            fillColor: 'rgba( 215, 91, 181,1)',
+                            backgroundColor: 'rgba(125, 291, 181, 0.5)',
+
+                            strokeColor: 'rgba(125,32,190,1)',
+                            borderColor: 'rgba(255,214,127,1)',
                             borderWidth: 2,
 
-                            pointStyle: 'cross',
-                            pointBorderWidth: 1,
-                            pointRadius: 7,
+                            pointBorderWidth: 3,
+                            pointRadius: 4,
                             pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
-                            pointColor: 'rgba(209, 231, 255, 1)',
-                            pointStrokeColor: 'rgba(209, 231, 255, 1)',
-                            pointHighlightFill: 'rgba(174, 240, 254, 1)',
-                            pointHighlightStroke: "rgba(174, 240, 254, 1)",
+                            pointColor: 'rgba(151,187,205,1)',
+                            pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                            pointHighlightFill: 'rgba(255,214,127,1)',
+                            pointHighlightStroke: 'rgba(255,214,127,1)'
 
 
-
-                        }, // Fin de linea 1
-
-                        {// Linea 2
-                            label: '2017 Humedad %',
-                            data: [28, 29, 32, 36, 31, 29, 27, 23, 26, 27, 28, 30, 32, 34, 35, 36, 34, 34, 33, 29, 27, 25, 23, 25, 27],
-
-
+                        }, // Fin Modulo1
+                        {// Modulo 1: this.state.metrics.moduleHumidity.m1
+                            label: 'M2 Humedad: %',
+                            data: m2,
 
                             fillColor: 'rgba( 225, 191, 81,1)',
                             backgroundColor: 'rgba(225, 191, 81, 0.5)',
@@ -98,26 +336,169 @@ class Humedad extends Component {
                             pointHighlightStroke: 'rgba(255,214,127,1)'
 
 
-                        } // Fin de linea 2
+                        }, // Fin de M2
+                        {// Modulo 3: this.state.metrics.moduleHumidity.m1
+                            label: 'M3 Humedad: %',
+                            data: m3,
+
+
+
+                            fillColor: 'rgba( 125, 191, 31,1)',
+                            backgroundColor: 'rgba(215, 111, 281, 0.5)',
+
+                            strokeColor: 'rgba(255,252,95,1)',
+                            borderColor: 'rgba(255,214,127,1)',
+                            borderWidth: 2,
+
+                            pointBorderWidth: 3,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
+                            pointColor: 'rgba(151,187,205,1)',
+                            pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                            pointHighlightFill: 'rgba(255,214,127,1)',
+                            pointHighlightStroke: 'rgba(255,214,127,1)'
+
+
+                        }, // Fin de M3
+                        {// Modulo 4: this.state.metrics.moduleHumidity.m1
+                            label: 'M4 Humedad: %',
+                            data: m4,
+
+
+
+                            fillColor: 'rgba( 25, 11, 31,1)',
+                            backgroundColor: 'rgba(25, 255, 50, 0.5)',
+
+                            strokeColor: 'rgba(55,152,85,1)',
+                            borderColor: 'rgba(155,14,27,1)',
+                            borderWidth: 2,
+
+                            pointBorderWidth: 3,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
+                            pointColor: 'rgba(151,187,205,1)',
+                            pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                            pointHighlightFill: 'rgba(255,214,127,1)',
+                            pointHighlightStroke: 'rgba(255,214,127,1)'
+
+
+                        } // Fin M4
+
+                    ]//Fin del DataSets
+
+                }// Fin de chartData
+
+            }) // Fin del set state chartDataModulesMonth
+
+
+            this.setState({
+
+                chartDataModulesMonthAverage: {
+
+                    labels: daysArray,
+
+                    datasets: [
+
+                        {// Modulo 1: this.state.metrics.moduleHumidity.m1
+                            label: 'Promedio de mes Humedad: %',
+                            data: TotalHumidity,
+
+
+
+                            fillColor: 'rgba( 215, 91, 181,1)',
+                            backgroundColor: 'rgba(125, 291, 181, 0.5)',
+
+                            strokeColor: 'rgba(125,32,190,1)',
+                            borderColor: 'rgba(255,214,127,1)',
+                            borderWidth: 2,
+
+                            pointBorderWidth: 3,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
+                            pointColor: 'rgba(151,187,205,1)',
+                            pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                            pointHighlightFill: 'rgba(255,214,127,1)',
+                            pointHighlightStroke: 'rgba(255,214,127,1)'
+
+
+                        } // Fin Modulo1 
 
                     ]//Fin del DataSets
 
                 }// Fin de chartData
             })
 
+        })
+
+
+            .catch(function (error) {
+                console.log(error);
+            });
+        // Fin de la petición del Objeto metrics Day
+
+    }// Fin del componentDidMount
+
+reciveDataDay(e){
+
+        e.preventDefault()
+
+        let dateRaw = e.target.date.value
+
+        let date = dateRaw.replace('/', '-').replace('/', '-')
+
+        this.setState({
+
+            dateData: date
+        })
+
+        console.log(this.state.dateData)
+
+        axios({
+            method: 'get',
+            url: `https://csa-systems.herokuapp.com/sensores/datos/search?dateSearch=${this.state.dateData}`,
+
+        }).then(response => {
+
+            this.setState({
+                metricsDay: response.data.metrics
+            })
+            console.log(this.state.metricsDay)
+
+            // Grafica de los 4 Modulos del dia
             this.setState({
 
-                chartData1: {
+                chartDataModulesDay: {
 
-                    labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31'],
+                    labels: this.state.metricsDay.hours,
 
                     datasets: [
 
-                         {// Linea 2
-                            label: 'Humedad %',
-                            data: [28, 29, 32, 36, 31, 29, 27, 23, 26, 27, 28, 30, 32, 34, 35, 36, 34, 34, 33, 29, 27, 25, 23, 25, 27],
+                        {// Modulo 1: this.state.metrics.moduleHumidity.m1
+                            label: 'M1 Humedad: %',
+                            data: this.state.metricsDay.moduleHumidity.m1,
 
 
+
+                            fillColor: 'rgba( 215, 91, 181,1)',
+                            backgroundColor: 'rgba(125, 291, 181, 0.5)',
+
+                            strokeColor: 'rgba(125,32,190,1)',
+                            borderColor: 'rgba(255,214,127,1)',
+                            borderWidth: 2,
+
+                            pointBorderWidth: 3,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
+                            pointColor: 'rgba(151,187,205,1)',
+                            pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                            pointHighlightFill: 'rgba(255,214,127,1)',
+                            pointHighlightStroke: 'rgba(255,214,127,1)'
+
+
+                        }, // Fin Modulo1
+                        {// Modulo 1: this.state.metrics.moduleHumidity.m1
+                            label: 'M2 Humedad: %',
+                            data: this.state.metricsDay.moduleHumidity.m2,
 
                             fillColor: 'rgba( 225, 191, 81,1)',
                             backgroundColor: 'rgba(225, 191, 81, 0.5)',
@@ -135,68 +516,121 @@ class Humedad extends Component {
                             pointHighlightStroke: 'rgba(255,214,127,1)'
 
 
-                        } // Fin de linea 2
+                        }, // Fin de M2
+                        {// Modulo 3: this.state.metrics.moduleHumidity.m1
+                            label: 'M3 Humedad: %',
+                            data: this.state.metricsDay.moduleHumidity.m3,
 
+
+
+                            fillColor: 'rgba( 125, 191, 31,1)',
+                            backgroundColor: 'rgba(215, 111, 281, 0.5)',
+
+                            strokeColor: 'rgba(255,252,95,1)',
+                            borderColor: 'rgba(255,214,127,1)',
+                            borderWidth: 2,
+
+                            pointBorderWidth: 3,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
+                            pointColor: 'rgba(151,187,205,1)',
+                            pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                            pointHighlightFill: 'rgba(255,214,127,1)',
+                            pointHighlightStroke: 'rgba(255,214,127,1)'
+
+
+                        }, // Fin de M3
+                        {// Modulo 4: this.state.metrics.moduleHumidity.m1
+                            label: 'M4 Humedad: %',
+                            data: this.state.metricsDay.moduleHumidity.m4,
+
+
+
+                            fillColor: 'rgba( 25, 11, 31,1)',
+                            backgroundColor: 'rgba(25, 255, 50, 0.5)',
+
+                            strokeColor: 'rgba(55,152,85,1)',
+                            borderColor: 'rgba(155,14,27,1)',
+                            borderWidth: 2,
+
+                            pointBorderWidth: 3,
+                            pointRadius: 4,
+                            pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
+                            pointColor: 'rgba(151,187,205,1)',
+                            pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                            pointHighlightFill: 'rgba(255,214,127,1)',
+                            pointHighlightStroke: 'rgba(255,214,127,1)'
+
+
+                        } // Fin M4
 
                     ]//Fin del DataSets
 
                 }// Fin de chartData
             })
 
+            // Grafica 4 Modulos PROMEDIO el dia
             this.setState({
 
-                chartData2: {
+                chartDataModulesDayAverage: {
 
-                    labels: ['0:00', '1:00:', '2:00', '3:00', '4:00', '5:00', '6:00', '7:00', '8:00', '9:00', '10:00', '11:00', '12:00', '13:00:', '14:00', '15:00', '16:00', '17:00', '10:00', '19:00', '20:00', '21:00', '22:00', '23:00'],
+                    labels: this.state.metricsDay.hours,
 
                     datasets: [
 
+                        {// Modulo 1: this.state.metrics.moduleHumidity.m1
+                            label: 'Promedio modulos. Humedad: %',
+                            data: this.state.metricsDay.totalRelativeHumidity,
 
-                        {// Linea 1
-                            label: 'Humedad %',
 
-                            data: this.state.temperature,
 
-                            fillColor: 'rgba(255, 99, 132, 0.6)',
-                            backgroundColor: 'rgba(25, 189, 255, 0.2)',
+                            fillColor: 'rgba( 215, 91, 181,1)',
+                            backgroundColor: 'rgba(125, 291, 181, 0.5)',
 
-                            strokeColor: 'rgba(174, 240, 254, 0.9)',
-                            borderColor: 'rgba(174, 240, 254, 1)',
+                            strokeColor: 'rgba(125,32,190,1)',
+                            borderColor: 'rgba(255,214,127,1)',
                             borderWidth: 2,
 
-                            pointStyle: 'cross',
-                            pointBorderWidth: 1,
-                            pointRadius: 7,
+                            pointBorderWidth: 3,
+                            pointRadius: 4,
                             pointBackgroundColor: 'rgba(209, 231, 255, 0.3)',
-                            pointColor: 'rgba(209, 231, 255, 1)',
-                            pointStrokeColor: 'rgba(209, 231, 255, 1)',
-                            pointHighlightFill: 'rgba(174, 240, 254, 1)',
-                            pointHighlightStroke: "rgba(174, 240, 254, 1)",
+                            pointColor: 'rgba(151,187,205,1)',
+                            pointStrokeColor: 'rgba(255, 200, 107, 0.6)',
+                            pointHighlightFill: 'rgba(255,214,127,1)',
+                            pointHighlightStroke: 'rgba(255,214,127,1)'
 
 
-
-                        } // Fin de linea 1
-
-
+                        } // Fin Modulo1
                     ]//Fin del DataSets
 
                 }// Fin de chartData
+            })
+
+            // Humedad promedio del dia
+            this.setState({
+
+                dayAverage: [this.state.metricsDay.totalHumidity.toFixed(2)]// ToFixed para limitar los decimales
             })
         })
             .catch(function (error) {
                 console.log(error);
             });
+        // Fin de la petición del Objeto metrics Day
 
-    }// Fin del componentDidMount
-
+    }
 
     render() {
         return (
             <div>
+                <form className="pure-form AddForm" onSubmit={this.reciveDataDay}> 
+                Ingrese fecha de consulta:
+                    <Calendar name="date"> </Calendar> 
+                    <input className="pure-button pure-button-primary" type="submit" value="Recibir Datos" /> 
+                </form>
                 <div className="Chart">
 
                     <Line
-                        data={this.state.chartData0}
+                        data={this.state.chartDataModulesDay}
                         //width={100}
                         //height={50}
 
@@ -204,140 +638,7 @@ class Humedad extends Component {
 
                             title: {
                                 display: true,
-                                text: 'Comparación de Humedad por año',
-                                fontSize: 30,
-                                fontColor: 'teal'
-
-                            },
-                            legend: {
-                                display: true,
-                                labels: {
-                                    fontColor: 'black',
-                                    fontSize: 20
-                                }
-                            },
-                            scales: {
-                                yAxes: [{
-                                    scaleLabel: {
-                                        display: 'true',
-                                        labelString: 'Humedad',
-                                        fontColor: 'black',
-                                        fontSize: 20,
-                                        position: 'top'
-                                    },
-                                    ticks: {
-                                        display: true,
-                                        labelString: 'Humedad',
-                                        fontSize: 20,
-                                        fontColor: 'black',
-                                        // Include a dollar sign in the ticks
-                                        callback: function (value, index, values) {
-                                            return value + ' %';
-                                        }
-                                    }
-                                }],
-
-                                xAxes: [{
-
-                                    ticks: {
-                                        display: true,
-                                        fontSize: 16,
-                                        fontColor: 'black',
-
-                                    }
-                                }]
-                            }
-
-
-                        }}
-                    />
-
-
-
-                </div>
-                <div className="Chart">
-
-                    <Line
-                        data={this.state.chartData1}
-                        //width={100}
-                        //height={50}
-
-                        options={{
-
-                            title: {
-                                display: true,
-                                text: 'Humedad del mes',
-                                fontSize: 30,
-                                fontColor: 'teal'
-
-                            },
-                            legend: {
-                                display: true,
-                                labels: {
-                                    fontColor: 'black',
-                                    fontSize: 20
-                                }
-                            },
-                            scales: {
-                                yAxes: [{
-                                    scaleLabel: {
-                                        display: 'true',
-                                        labelString: 'Humedad',
-                                        fontColor: 'black',
-                                        fontSize: 20,
-                                        position: 'top'
-                                    },
-                                    ticks: {
-                                        display: true,
-                                        labelString: 'Humedad',
-                                        fontSize: 20,
-                                        fontColor: 'black',
-                                        // Include a dollar sign in the ticks
-                                        callback: function (value, index, values) {
-                                            return value + ' %';
-                                        }
-                                    }
-                                }],
-
-                                xAxes: [{
-
-                                    scaleLabel: {
-                                        display: 'true',
-                                        labelString: 'Dias',
-                                        fontColor: 'black',
-                                        fontSize: 20,
-                                        position: 'top'
-                                    },
-
-                                    ticks: {
-                                        display: true,
-                                        labelString: 'Dias',
-                                        fontSize: 16,
-                                        fontColor: 'black',
-
-                                    }
-                                }]
-                            }
-
-
-                        }}
-                    />
-
-
-
-                </div>
-                <div className="Chart">
-
-                    <Line
-                        data={this.state.chartData2}
-                        //width={100}
-                        //height={50}
-
-                        options={{
-
-                            title: {
-                                display: true,
-                                text: 'Humedad del día',
+                                text: 'Comparación de Humedad por día',
                                 fontSize: 30,
                                 fontColor: 'teal'
 
@@ -381,6 +682,7 @@ class Humedad extends Component {
 
                                     ticks: {
                                         display: true,
+                                        labelString: 'Hora',
                                         fontSize: 16,
                                         fontColor: 'black',
 
@@ -395,6 +697,222 @@ class Humedad extends Component {
 
 
                 </div>
+
+                <div className="Chart">
+
+                    <Line
+                        data={this.state.chartDataModulesDayAverage}
+                        //width={100}
+                        //height={50}
+
+                        options={{
+
+                            title: {
+                                display: true,
+                                text: 'Promedio Humedad por día',
+                                fontSize: 30,
+                                fontColor: 'teal'
+
+                            },
+                            legend: {
+                                display: true,
+                                labels: {
+                                    fontColor: 'black',
+                                    fontSize: 20
+                                }
+                            },
+                            scales: {
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: 'true',
+                                        labelString: 'Humedad',
+                                        fontColor: 'black',
+                                        fontSize: 20,
+                                        position: 'top'
+                                    },
+                                    ticks: {
+                                        display: true,
+                                        labelString: 'Humedad',
+                                        fontSize: 20,
+                                        fontColor: 'black',
+                                        // Include a dollar sign in the ticks
+                                        callback: function (value, index, values) {
+                                            return value + ' %';
+                                        }
+                                    }
+                                }],
+
+                                xAxes: [{
+                                    scaleLabel: {
+                                        display: 'true',
+                                        labelString: 'Hora',
+                                        fontColor: 'black',
+                                        fontSize: 20,
+                                        position: 'top'
+                                    },
+
+                                    ticks: {
+                                        display: true,
+                                        labelString: 'Hora',
+                                        fontSize: 16,
+                                        fontColor: 'black',
+
+                                    }
+                                }]
+                            }
+
+
+                        }}
+                    />
+
+
+
+                </div>
+
+                <h5 className="card teal darken-1 white-text center hoverable">La humedad TOTAL del dias es: {this.state.dayAverage}%</h5>
+
+                <div className="Chart">
+
+                    <Line
+                        data={this.state.chartDataModulesMonth}
+                        //width={100}
+                        //height={50}
+
+                        options={{
+
+                            title: {
+                                display: true,
+                                text: 'Humedad modulos del mes',
+                                fontSize: 30,
+                                fontColor: 'teal'
+
+                            },
+                            legend: {
+                                display: true,
+                                labels: {
+                                    fontColor: 'black',
+                                    fontSize: 20
+                                }
+                            },
+                            scales: {
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: 'true',
+                                        labelString: 'Humedad',
+                                        fontColor: 'black',
+                                        fontSize: 20,
+                                        position: 'top'
+                                    },
+                                    ticks: {
+                                        display: true,
+                                        labelString: 'Humedad',
+                                        fontSize: 20,
+                                        fontColor: 'black',
+                                        // Include a dollar sign in the ticks
+                                        callback: function (value, index, values) {
+                                            return value + ' %';
+                                        }
+                                    }
+                                }],
+
+                                xAxes: [{
+                                    scaleLabel: {
+                                        display: 'true',
+                                        labelString: 'Hora',
+                                        fontColor: 'black',
+                                        fontSize: 20,
+                                        position: 'top'
+                                    },
+
+                                    ticks: {
+                                        display: true,
+                                        labelString: 'Hora',
+                                        fontSize: 16,
+                                        fontColor: 'black',
+
+                                    }
+                                }]
+                            }
+
+
+                        }}
+                    />
+
+
+
+                </div>
+
+                <div className="Chart">
+
+                    <Line
+                        data={this.state.chartDataModulesMonthAverage}
+                        //width={100}
+                        //height={50}
+
+                        options={{
+
+                            title: {
+                                display: true,
+                                text: 'Humedad Promedio del mes',
+                                fontSize: 30,
+                                fontColor: 'teal'
+
+                            },
+                            legend: {
+                                display: true,
+                                labels: {
+                                    fontColor: 'black',
+                                    fontSize: 20
+                                }
+                            },
+                            scales: {
+                                yAxes: [{
+                                    scaleLabel: {
+                                        display: 'true',
+                                        labelString: 'Humedad',
+                                        fontColor: 'black',
+                                        fontSize: 20,
+                                        position: 'top'
+                                    },
+                                    ticks: {
+                                        display: true,
+                                        labelString: 'Humedad',
+                                        fontSize: 20,
+                                        fontColor: 'black',
+                                        // Include a dollar sign in the ticks
+                                        callback: function (value, index, values) {
+                                            return value + ' %';
+                                        }
+                                    }
+                                }],
+
+                                xAxes: [{
+                                    scaleLabel: {
+                                        display: 'true',
+                                        labelString: 'Hora',
+                                        fontColor: 'black',
+                                        fontSize: 20,
+                                        position: 'top'
+                                    },
+
+                                    ticks: {
+                                        display: true,
+                                        labelString: 'Hora',
+                                        fontSize: 16,
+                                        fontColor: 'black',
+
+                                    }
+                                }]
+                            }
+
+
+                        }}
+                    />
+
+
+
+                </div>
+
             </div>
         )
 
@@ -402,3 +920,4 @@ class Humedad extends Component {
 }
 
 export default Humedad
+

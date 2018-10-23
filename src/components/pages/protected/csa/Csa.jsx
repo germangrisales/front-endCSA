@@ -63,7 +63,7 @@ class CSA extends Component {
             <Router>
                 <div className="row" >
 
-                    <div className="col s3 l2">
+                    <div className="col s2 l2">
 
                         < SideNav
                             trigger={< Button className="teal"> CSA </Button >}
@@ -87,7 +87,7 @@ class CSA extends Component {
 
                     </div>
 
-                    <div className="col s9 l10">
+                    <div className="col s10 l10">
 
                         <Switch className="componenteCsa">
 

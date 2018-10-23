@@ -11,7 +11,7 @@ export default class Fuego extends Component {
 
         this.state = {
 
-            fire:[0, 0, 0, 0]
+            fire:[]
 
         }
         // Siempre que se crea un método se debe hacer el autobinding: Enlaza el this de la instancia con el this del constructor (buena practica) dentro del constructor

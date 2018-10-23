@@ -39,7 +39,7 @@ class Temperatura extends Component {
 
         axios({
             method: 'get',
-            url: 'https://csa-systems.herokuapp.com/sensores/datos/search?dateSearch=2018-10-16',
+            url: 'https://csa-systems.herokuapp.com/sensores/datos/search?dateSearch=2018-10-15',
         
         }).then(response => {
 
@@ -58,7 +58,7 @@ class Temperatura extends Component {
                     datasets: [
 
                         {// Modulo 1: this.state.metrics.moduleTemperature.m1
-                            label: 'M2 Temperatura: ºC',
+                            label: 'M1 Temperatura: ºC',
                             data: this.state.metricsDay.moduleTemperature.m1,
 
 
